@@ -1,6 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+import { apiKeyManager } from "./apiKeyManager";
 
 const JSON_SYSTEM_INSTRUCTION = `
 You are a specialized JSON assistant. Your task is to output strictly valid JSON based on the user's request. 
@@ -12,6 +11,15 @@ If the user asks to generate data, generate a rich, nested JSON structure suitab
 
 export const generateJsonWithGemini = async (prompt: string): Promise<string> => {
   try {
+    // Get API key from localStorage or fallback to env
+    const apiKey = apiKeyManager.getApiKey() || process.env.GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('No API key found. Please configure your Google Gemini API key in Settings.');
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+    
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,

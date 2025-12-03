@@ -15,6 +15,7 @@ import Editor from './components/Editor';
 import GraphNode from './components/GraphNode';
 import { getLayoutedElements } from './services/layoutService';
 import { generateJsonWithGemini } from './services/geminiService';
+import { apiKeyManager } from './services/apiKeyManager';
 import { INITIAL_JSON } from './constants';
 
 // Define custom node types outside component to prevent re-creation
@@ -27,6 +28,7 @@ const Flow = () => {
     const [jsonError, setJsonError] = useState<string | null>(null);
     const [isAiGenerating, setIsAiGenerating] = useState(false);
     const [layoutDirection, setLayoutDirection] = useState<'LR' | 'TB'>('LR');
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
     
     // ReactFlow State
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -108,13 +110,20 @@ const Flow = () => {
     };
 
     const handleAiGenerate = async (prompt: string) => {
+        // Check if API key exists
+        if (!apiKeyManager.hasApiKey()) {
+            alert('⚠️ No API Key Found!\n\nPlease configure your Google Gemini API key first.\n\nClick "OK" to open Settings.');
+            setShowSettingsModal(true);
+            return;
+        }
+
         setIsAiGenerating(true);
         try {
             const newJson = await generateJsonWithGemini(prompt);
             setJsonInput(newJson);
         } catch (e) {
             console.error(e);
-            alert('Failed to generate JSON. Check API Key or try again.');
+            alert('Failed to generate JSON. Check your API Key or try again.');
         } finally {
             setIsAiGenerating(false);
         }
@@ -181,6 +190,8 @@ const Flow = () => {
                 onShare={handleShare}
                 onAiGenerate={handleAiGenerate}
                 isGenerating={isAiGenerating}
+                showSettingsModal={showSettingsModal}
+                setShowSettingsModal={setShowSettingsModal}
             />
             
             <div className="flex-1 flex overflow-hidden">
