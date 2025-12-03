@@ -46,7 +46,7 @@ const getKeyColor = (child: { type: string, isLink: boolean }) => {
 
 const GraphNode = ({ data, isConnectable }: NodeProps<JsonNodeData>) => {
   return (
-    <div className="bg-[#1e1e1e] border border-[#444] rounded-md shadow-xl min-w-[280px] overflow-hidden">
+    <div className="bg-[#1e1e1e] border border-[#444] rounded-md shadow-xl min-w-[280px] overflow-hidden transition-all duration-200">
       {/* Header */}
       <div className="bg-[#2d2d2d] px-3 py-2 border-b border-[#444] flex items-center justify-between h-[40px]">
         <div className="flex items-center gap-2">

@@ -138,7 +138,7 @@ const Flow = () => {
             setNodes((nds) =>
                 nds.map((node) => ({
                     ...node,
-                    style: { ...node.style, opacity: 1, border: 'none' }
+                    style: { ...node.style, opacity: 1, border: 'none', boxShadow: 'none' }
                 }))
             );
             return;
@@ -150,22 +150,26 @@ const Flow = () => {
         setNodes((nds) =>
             nds.map((node) => {
                 const nodeData = node.data as any;
-                const isMatch = 
-                    node.id.toLowerCase().includes(lowerQuery) ||
-                    nodeData.label?.toLowerCase().includes(lowerQuery) ||
-                    nodeData.children?.some((child: any) =>
-                        child.key?.toLowerCase().includes(lowerQuery) ||
-                        child.value?.toString().toLowerCase().includes(lowerQuery)
-                    );
+                
+                // Check if label matches
+                const labelMatch = nodeData.label?.toLowerCase().includes(lowerQuery);
+                
+                // Check if any child key or value matches
+                const childrenMatch = nodeData.children?.some((child: any) =>
+                    child.key?.toLowerCase().includes(lowerQuery) ||
+                    String(child.value)?.toLowerCase().includes(lowerQuery)
+                );
+                
+                const isMatch = labelMatch || childrenMatch;
 
                 return {
                     ...node,
                     style: {
-                        ...node.style,
                         border: isMatch ? '2px solid #22c55e' : 'none',
-                        opacity: isMatch ? 1 : 0.3,
-                        boxShadow: isMatch ? '0 0 10px rgba(34, 197, 94, 0.5)' : 'none'
-                    }
+                        opacity: isMatch ? 1 : 0.2,
+                        boxShadow: isMatch ? '0 0 15px rgba(34, 197, 94, 0.6)' : 'none',
+                        backgroundColor: isMatch ? 'rgba(34, 197, 94, 0.05)' : 'transparent'
+                    } as any
                 };
             })
         );
