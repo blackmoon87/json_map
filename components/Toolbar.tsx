@@ -170,7 +170,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
       {/* AI Modal */}
       {showAiModal && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
             <div className="bg-[#2d2d2d] border border-[#555] rounded-lg shadow-2xl p-6 w-full max-w-md">
                 <h3 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
                     <Sparkles className="text-purple-400" size={20} />
@@ -203,7 +203,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
       {/* Settings Modal */}
       {showSettingsModal && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
             <div className="bg-[#2d2d2d] border border-[#555] rounded-lg shadow-2xl p-6 w-full max-w-md">
                 <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
                     <Settings className="text-yellow-400" size={20} />
@@ -286,7 +286,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
       {/* Search Modal */}
       {showSearchModal && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
             <div className="bg-[#2d2d2d] border border-[#555] rounded-lg shadow-2xl p-6 w-full max-w-md">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-white font-bold text-lg flex items-center gap-2">
