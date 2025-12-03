@@ -286,12 +286,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
       {/* Search Modal */}
       {showSearchModal && (
-        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-            <div className="bg-[#2d2d2d] border border-[#555] rounded-lg shadow-2xl p-6 w-full max-w-md">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-white font-bold text-lg flex items-center gap-2">
-                    <Search className="text-green-400" size={20} />
-                    Search in Graph
+        <div className="fixed inset-0 z-50 flex items-start justify-start pointer-events-none p-4 pt-20">
+            <div className="bg-[#2d2d2d] border border-[#555] rounded-lg shadow-2xl p-4 w-80 pointer-events-auto max-h-96 overflow-y-auto">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-white font-bold text-sm flex items-center gap-2">
+                    <Search className="text-green-400" size={16} />
+                    Search
                   </h3>
                   <button 
                     onClick={() => {
@@ -301,12 +301,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
                     }}
                     className="text-gray-400 hover:text-white"
                   >
-                    <X size={18} />
+                    <X size={16} />
                   </button>
                 </div>
 
-                <p className="text-gray-400 text-sm mb-4">Search by key name or value to find and highlight nodes in the graph visualization.</p>
-                
                 <input 
                   type="text"
                   value={searchQuery}
@@ -314,33 +312,30 @@ const Toolbar: React.FC<ToolbarProps> = ({
                     setSearchQuery(e.target.value);
                     onSearch(e.target.value);
                   }}
-                  className="w-full bg-[#1e1e1e] border border-[#444] rounded p-2 text-gray-200 text-sm focus:border-green-500 focus:outline-none mb-4"
-                  placeholder="Search keys, values, or node names..."
+                  className="w-full bg-[#1e1e1e] border border-[#444] rounded p-2 text-gray-200 text-xs focus:border-green-500 focus:outline-none mb-3"
+                  placeholder="Search nodes..."
                   autoFocus
                 />
 
-                <div className="bg-[#1a1a1a] rounded p-3 text-xs text-gray-400 mb-4">
-                  <p className="font-semibold text-gray-300 mb-2">Search Tips:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-500">
-                    <li>Search for key names (e.g., "name", "email")</li>
-                    <li>Search for values (e.g., "john", "123")</li>
-                    <li>Search is case-insensitive</li>
-                    <li>Matching nodes will be highlighted in green</li>
+                <div className="text-xs text-gray-500 space-y-1 mb-3">
+                  <p className="text-gray-400 font-semibold">Tips:</p>
+                  <ul className="list-disc list-inside space-y-0.5">
+                    <li>Search keys or values</li>
+                    <li>Case-insensitive</li>
+                    <li>Nodes highlight in green</li>
                   </ul>
                 </div>
 
-                <div className="flex gap-3">
-                  <button 
-                    onClick={() => {
-                      setShowSearchModal(false);
-                      setSearchQuery('');
-                      onSearch('');
-                    }}
-                    className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm font-medium"
-                  >
-                    Close
-                  </button>
-                </div>
+                <button 
+                  onClick={() => {
+                    setShowSearchModal(false);
+                    setSearchQuery('');
+                    onSearch('');
+                  }}
+                  className="w-full px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-medium"
+                >
+                  Close
+                </button>
             </div>
         </div>
       )}
