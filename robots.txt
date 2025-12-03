@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /node_modules/
+
+Sitemap: https://blackmoon87.github.io/json_map/sitemap.xml
+
+# Specific rules for search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
