@@ -29,6 +29,7 @@ const Flow = () => {
     const [isAiGenerating, setIsAiGenerating] = useState(false);
     const [layoutDirection, setLayoutDirection] = useState<'LR' | 'TB'>('LR');
     const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     
     // ReactFlow State
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -129,6 +130,47 @@ const Flow = () => {
         }
     };
 
+    // Search handler - highlights matching nodes
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+        if (!query.trim()) {
+            // Reset all nodes to default style
+            setNodes((nds) =>
+                nds.map((node) => ({
+                    ...node,
+                    style: { ...node.style, opacity: 1, border: 'none' }
+                }))
+            );
+            return;
+        }
+
+        const lowerQuery = query.toLowerCase();
+        
+        // Find matching nodes
+        setNodes((nds) =>
+            nds.map((node) => {
+                const nodeData = node.data as any;
+                const isMatch = 
+                    node.id.toLowerCase().includes(lowerQuery) ||
+                    nodeData.label?.toLowerCase().includes(lowerQuery) ||
+                    nodeData.children?.some((child: any) =>
+                        child.key?.toLowerCase().includes(lowerQuery) ||
+                        child.value?.toString().toLowerCase().includes(lowerQuery)
+                    );
+
+                return {
+                    ...node,
+                    style: {
+                        ...node.style,
+                        border: isMatch ? '2px solid #22c55e' : 'none',
+                        opacity: isMatch ? 1 : 0.3,
+                        boxShadow: isMatch ? '0 0 10px rgba(34, 197, 94, 0.5)' : 'none'
+                    }
+                };
+            })
+        );
+    };
+
     // Highlight connections on drag start
     const onNodeDragStart = useCallback((_: React.MouseEvent, node: Node) => {
         setEdges((eds) =>
@@ -189,6 +231,7 @@ const Flow = () => {
                 onExport={handleExport}
                 onShare={handleShare}
                 onAiGenerate={handleAiGenerate}
+                onSearch={handleSearch}
                 isGenerating={isAiGenerating}
                 showSettingsModal={showSettingsModal}
                 setShowSettingsModal={setShowSettingsModal}

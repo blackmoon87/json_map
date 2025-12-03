@@ -26,6 +26,7 @@ interface ToolbarProps {
   onExport: () => void;
   onShare: () => void;
   onAiGenerate: (text: string) => void;
+  onSearch: (query: string) => void;
   isGenerating: boolean;
   showSettingsModal: boolean;
   setShowSettingsModal: (show: boolean) => void;
@@ -38,6 +39,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onAiGenerate,
   onExport,
   onShare,
+  onSearch,
   showSettingsModal,
   setShowSettingsModal
 }) => {
@@ -292,7 +294,11 @@ const Toolbar: React.FC<ToolbarProps> = ({
                     Search in Graph
                   </h3>
                   <button 
-                    onClick={() => setShowSearchModal(false)}
+                    onClick={() => {
+                      setShowSearchModal(false);
+                      setSearchQuery('');
+                      onSearch('');
+                    }}
                     className="text-gray-400 hover:text-white"
                   >
                     <X size={18} />
@@ -304,7 +310,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
                 <input 
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    onSearch(e.target.value);
+                  }}
                   className="w-full bg-[#1e1e1e] border border-[#444] rounded p-2 text-gray-200 text-sm focus:border-green-500 focus:outline-none mb-4"
                   placeholder="Search keys, values, or node names..."
                   autoFocus
@@ -316,13 +325,17 @@ const Toolbar: React.FC<ToolbarProps> = ({
                     <li>Search for key names (e.g., "name", "email")</li>
                     <li>Search for values (e.g., "john", "123")</li>
                     <li>Search is case-insensitive</li>
-                    <li>Matching nodes will be highlighted</li>
+                    <li>Matching nodes will be highlighted in green</li>
                   </ul>
                 </div>
 
                 <div className="flex gap-3">
                   <button 
-                    onClick={() => setShowSearchModal(false)}
+                    onClick={() => {
+                      setShowSearchModal(false);
+                      setSearchQuery('');
+                      onSearch('');
+                    }}
                     className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm font-medium"
                   >
                     Close
