@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState, useRef, useEffect } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { JsonNodeData } from '../types';
 import { 
@@ -7,7 +7,8 @@ import {
   Type, 
   Hash, 
   ToggleLeft, 
-  CircleOff 
+  CircleOff,
+  GripVertical
 } from 'lucide-react';
 
 // Icon helper
@@ -45,10 +46,51 @@ const getKeyColor = (child: { type: string, isLink: boolean }) => {
 };
 
 const GraphNode = ({ data, isConnectable }: NodeProps<JsonNodeData>) => {
+  const [width, setWidth] = useState(280);
+  const [isResizing, setIsResizing] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(0);
+
+  // Handle resize start
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+    startXRef.current = e.clientX;
+    startWidthRef.current = width;
+  };
+
+  // Handle resize drag
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const delta = e.clientX - startXRef.current;
+      const newWidth = Math.max(280, Math.min(700, startWidthRef.current + delta));
+      setWidth(newWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
+
   return (
-    <div className="bg-[#1e1e1e] border border-[#444] rounded-md shadow-xl min-w-[280px] overflow-hidden transition-all duration-200">
+    <div 
+      ref={containerRef}
+      className="bg-[#1e1e1e] border border-[#444] rounded-md shadow-xl overflow-hidden transition-all duration-200 flex flex-col"
+      style={{ width: `${width}px`, minWidth: '280px', maxWidth: '700px' }}
+    >
       {/* Header */}
-      <div className="bg-[#2d2d2d] px-3 py-2 border-b border-[#444] flex items-center justify-between h-[40px]">
+      <div className="bg-[#2d2d2d] px-3 py-2 border-b border-[#444] flex items-center justify-between h-[40px] flex-shrink-0">
         <div className="flex items-center gap-2">
           {data.type === 'array' ? (
             <Brackets size={14} className="text-yellow-500" />
@@ -64,12 +106,12 @@ const GraphNode = ({ data, isConnectable }: NodeProps<JsonNodeData>) => {
         </span>
       </div>
 
-      {/* Body */}
-      <div className="py-2">
+      {/* Body - Scrollable */}
+      <div className="py-2 overflow-y-auto max-h-[400px] flex-1">
         {data.children.map((child, index) => (
           <div 
             key={child.id} 
-            className="group relative flex items-center justify-between px-3 py-1 hover:bg-[#2a2a2a] transition-colors h-[28px]"
+            className="group relative flex items-center justify-between px-3 py-1 hover:bg-[#2a2a2a] transition-colors h-[28px] flex-shrink-0"
           >
             <div className="flex items-center gap-2 overflow-hidden">
               {/* Type Icon */}
@@ -115,6 +157,17 @@ const GraphNode = ({ data, isConnectable }: NodeProps<JsonNodeData>) => {
         {data.children.length === 0 && (
            <div className="px-3 py-1 text-gray-500 text-xs italic text-center">Empty</div>
         )}
+      </div>
+
+      {/* Resize Handle */}
+      <div 
+        onMouseDown={handleResizeStart}
+        className={`h-1.5 cursor-col-resize border-t border-[#444] flex-shrink-0 transition-all flex items-center justify-center ${
+          isResizing ? 'bg-[#666]' : 'bg-[#333] hover:bg-[#555]'
+        }`} 
+        title="Drag to resize width"
+      >
+        <GripVertical size={12} className="text-gray-500 opacity-50" />
       </div>
 
       {/* Input Handle for incoming connections */}
